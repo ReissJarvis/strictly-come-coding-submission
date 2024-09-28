@@ -2,25 +2,25 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
-	"submission/concurrentreader"
-	"time"
+	"submission/reader"
 )
 
 const _fileLocation = "../strictly-come-coding/measurements.txt"
 
 func main() {
-	start := time.Now()
-	f, err := os.Open(_fileLocation)
+	fileLocation := _fileLocation
+
+	if len(os.Args) > 1 {
+		fileLocation = os.Args[1]
+	}
+
+	f, err := os.Open(fileLocation)
 	if err != nil {
 		panic(errors.New("error reading file"))
 	}
 
 	defer f.Close()
 
-	concurrentreader.Read(f)
-
-	elapsed := time.Since(start)
-	fmt.Printf("Run took %s", elapsed)
+	reader.Read(f)
 }
