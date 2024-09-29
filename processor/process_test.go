@@ -16,8 +16,8 @@ func TestProcess(t *testing.T) {
 			t.Errorf("Expected: London, Actual: %s", city)
 		}
 
-		if temp != 12.5 {
-			t.Errorf("Expected: 12.5, Actual: %f", temp)
+		if temp != 125 {
+			t.Errorf("Expected: 12.5, Actual: %d", temp)
 		}
 	})
 
@@ -30,8 +30,8 @@ func TestProcess(t *testing.T) {
 			t.Errorf("Expected: London, Actual: %s", city)
 		}
 
-		if temp != 12.5 {
-			t.Errorf("Expected: 12.5, Actual: %f", temp)
+		if temp != 125 {
+			t.Errorf("Expected: 12.5, Actual: %d", temp)
 		}
 	})
 
@@ -44,8 +44,8 @@ func TestProcess(t *testing.T) {
 			t.Errorf("Expected: London, Actual: %s", city)
 		}
 
-		if temp != 2.5 {
-			t.Errorf("Expected: 2.5, Actual: %f", temp)
+		if temp != 25 {
+			t.Errorf("Expected: 2.5, Actual: %d", temp)
 		}
 	})
 
@@ -58,7 +58,7 @@ func TestProcess(t *testing.T) {
 			t.Fail()
 		}
 
-		if temp != -12.5 {
+		if temp != -125 {
 			t.Fail()
 		}
 	})
