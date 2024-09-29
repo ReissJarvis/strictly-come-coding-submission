@@ -71,8 +71,8 @@ func Read(f io.Reader) {
 
 	for _, key := range mk {
 		city := cityMap[key]
-		mean := (float64(city.Total) / float64(city.NumOfEntries)) / 10
-		fmt.Printf("%s;%.1f;%.1f;%.1f\n", key, float64(city.Min/10), mean, float64(city.Max/10))
+		mean := (float64(city.Total) / 10) / float64(city.NumOfEntries)
+		fmt.Printf("%s;%.1f;%.1f;%.1f\n", key, float64(city.Min)/10, mean, float64(city.Max)/10)
 	}
 }
 

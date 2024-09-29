@@ -17,11 +17,11 @@ func Process(input []byte) (city string, temp int, isValid bool) {
 		i++
 	}
 
-	temp += int((tempBytes[i] - '0')) * 10
+	temp += int(tempBytes[i]-'0') * 10
 	i++
 
 	if tempBytes[i] != '.' {
-		temp = temp*10 + int(tempBytes[i]-'0')
+		temp = temp*10 + int(tempBytes[i]-'0')*10
 		i++
 	}
 
