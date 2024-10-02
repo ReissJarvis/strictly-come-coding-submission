@@ -6,25 +6,38 @@ import (
 	"sync"
 )
 
-func Worker(jobs <-chan [][]byte, batchLimit int, results chan<- []model.Processed, wg *sync.WaitGroup) {
+func Worker(jobs <-chan [][]byte, batchLimit int, results chan<- map[string]*model.Stats, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for j := range jobs {
-		processed := make([]model.Processed, batchLimit)
+		cityMap := make(map[string]*model.Stats)
 
-		for i, row := range j {
+		for _, row := range j {
 			city, temp, valid := processor.Process(row)
 
 			if !valid {
 				continue
 			}
 
-			processed[i] = model.Processed{
-				City: city,
-				Temp: temp,
+			val, ok := cityMap[city]
+			if !ok {
+				cityMap[city] = &model.Stats{
+					Min:          temp,
+					Max:          temp,
+					NumOfEntries: 1,
+					Total:        temp,
+				}
+				continue
 			}
+
+			val.Max = max(val.Max, temp)
+			val.Min = min(val.Min, temp)
+			val.NumOfEntries++
+			val.Total += temp
+
+			cityMap[city] = val
 		}
 
-		results <- processed
+		results <- cityMap
 	}
 }
