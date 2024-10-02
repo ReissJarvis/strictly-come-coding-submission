@@ -18,7 +18,7 @@ func Read(f io.Reader) {
 
 	workerLimit := 5
 	wg.Add(workerLimit)
-	resultsChan := make(chan []model.Processed)
+	resultsChan := make(chan map[string]*model.Stats)
 	for i := 0; i < workerLimit; i++ {
 		go async.Worker(lines, batchLimit, resultsChan, wg)
 	}
@@ -30,46 +30,30 @@ func Read(f io.Reader) {
 	}()
 
 	for processedCities := range resultsChan {
-		for _, processed := range processedCities {
-			key := processed.City
-			temp := processed.Temp
+		for key, p := range processedCities {
+
 			val, ok := cityMap[key]
 			if !ok {
-				cityMap[key] = &model.Stats{
-					Min:          temp,
-					Max:          temp,
-					Total:        temp,
-					NumOfEntries: 0,
-				}
-			} else {
-				if val.Max < temp {
-					val.Max = temp
-				}
-
-				if val.Min > temp {
-					val.Min = temp
-				}
-
-				val.NumOfEntries++
-
-				val.Total += temp
-
-				cityMap[key] = val
+				cityMap[key] = p
+				continue
 			}
+
+			val.Max = max(val.Max, p.Max)
+			val.Min = min(val.Min, p.Min)
+			val.NumOfEntries += p.NumOfEntries
+			val.Total += p.Total
+
+			cityMap[key] = val
 		}
 	}
 
-	mk := make([]string, len(cityMap))
-
-	i := 0
+	cities := make([]string, 0, len(cityMap))
 	for k := range cityMap {
-		mk[i] = k
-		i++
+		cities = append(cities, k)
 	}
+	sort.Strings(cities)
 
-	sort.Strings(mk)
-
-	for _, key := range mk {
+	for _, key := range cities {
 		city := cityMap[key]
 		mean := (float64(city.Total) / 10) / float64(city.NumOfEntries)
 		fmt.Printf("%s;%.1f;%.1f;%.1f\n", key, float64(city.Min)/10, mean, float64(city.Max)/10)
