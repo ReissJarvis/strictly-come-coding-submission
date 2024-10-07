@@ -1,6 +1,8 @@
 package processor
 
-import "bytes"
+import (
+	"bytes"
+)
 
 func Process(input []byte) (city string, temp int, isValid bool) {
 	cityBytes, tempBytes, hasFound := bytes.Cut(input, []byte(";"))
